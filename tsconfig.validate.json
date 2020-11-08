@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": ["dom", "esnext", "ES2020"],
+    "baseUrl": "./src",
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": ["node_modules"],
+}
