@@ -14,6 +14,8 @@ import {
 import type { NoteType } from '../types';
 import Note from './Note';
 import { initialNote } from './constants';
+import useCreateController from './createController/useCreateController';
+import CreateController from './createController/CreateController';
 
 type ProbablyPromise<T> = T | Promise<T>;
 
@@ -49,13 +51,36 @@ const Notes: FC<NotesProps> = ({
     await removeNote(id);
     await loadAndSetNotes();
   }, [loadAndSetNotes, removeNote]);
-  const onCreate = useCallback(async () => {
-    await createNote(initialNote);
+  const onCreate = useCallback(async (note?: Omit<NoteType, 'id'>) => {
+    await createNote(note ?? initialNote);
     await loadAndSetNotes();
   }, [createNote, loadAndSetNotes]);
 
+  const {
+    containerRef,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+    actualStart,
+    actualEnd,
+    isMoving,
+  } = useCreateController(onCreate);
+
   return (
-    <Container>
+    <Container
+      ref={(node) => { containerRef.current = node; }}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+    >
+      {
+        isMoving && (
+          <CreateController
+            start={actualStart}
+            end={actualEnd}
+          />
+        )
+      }
       <ButtonsContainer>
         <Button
           onClick={onCreate}
